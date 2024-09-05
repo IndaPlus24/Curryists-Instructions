@@ -1,4 +1,6 @@
-# 🍛 2: It's time to cook
+<img src="https://media1.tenor.com/m/JMNkyka04FcAAAAC/let-us-cook-let-me-cook.gif" align="right" width="300" />
+
+# 🍛 2: We have to cook
 
 ## Läsanvisningar
 Det är rekommenderad att läsa fram till kapitel 6 i boken http://learnyouahaskell.com
