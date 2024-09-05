@@ -33,6 +33,7 @@ GHCi är en interaktiv miljö för GHC (Glasgow Haskell Compiler). Efter du har 
 När du är inne i GHCi så kan du börja definiera och kalla på funktioner direkt, rad för rad. Här är några användbara kommandon:
 - `:l <filnamn>.hs` för att ladda in en Haskell-fil. Du behöver göra det här innan du kan kalla på funktioner i filen.
 - `:set +s` gör så att alla funktionsanrop returnerar även hur mycket tid det tog att köra anropet.
+- `:q` för att lämna GHCi.
 
 ### Haskell exempelfil
 
