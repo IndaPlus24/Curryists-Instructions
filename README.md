@@ -27,7 +27,7 @@ Om du kör på MacOS:
 homebrew install ghc
 ```
 
-### Köra Haskell-kod med GHCI
+### Köra Haskell-kod med GHCi
 
 GHCi är en interaktiv miljö för GHC (Glasgow Haskell Compiler). Efter du har installerat GHC så kan du starta GHCi genom att skriva `ghci` i terminalen.
 
@@ -47,3 +47,5 @@ factorial x = if x == 0
             then 1
             else x * factorial (x-1)
 ```
+
+Kom ihåg att Haskellfiler slutar på `.hs`.
