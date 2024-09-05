@@ -1,20 +1,19 @@
-# Curryists-Instructions
 Uppgiftsbeskrivningar och allmänna kursinformation för plusgruppen "Curryists".
 
-### Kurslitteratur
+### 📚️ Kurslitteratur
 - Learn You a Haskell for Great Good!
   - [Originalsidan](https://learnyouahaskell.com/) saknar CSS och ser ful ut. Använd [denna arkiverad länk](https://archive.is/qvoOT) istället
 
-### Hur lämnar jag in mina lösningar?
+### ❓️ Hur lämnar jag in mina lösningar?
 
 1. Hitta din repo med motsvarande task-siffra på [KTH GitHub](https://gits-15.sys.kth.se/inda-24/).
 2. Clone:a repot till din dator.
 3. Lägg in dina lösningar i repot. Lägg kod under `/src` och textsvar under `/docs` (skapa mappen om den inte finns).
-5. Pusha den.
+5. Pusha ändringarna.
 
 Det är såklart alltid okej att göra Regular-tasks om du inte känner för att göra veckans Plus-task.
 
-## Haskell quick start
+## 🍛 Haskell quick start
 
 ### Installation
 
