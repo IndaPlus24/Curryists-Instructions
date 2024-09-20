@@ -35,7 +35,7 @@ projektet. Det går bra att köra default-valet på allt. (Förutom val av
 licens: där får du ingen default, men du kan välja whatever, jag kommer
 knappast sno din kod.)
 3. Gå till `.cabal`-filen som har genererats i mappen, hitta raden som
-börjar på `build-depends:`, och lägg till `, gtk3, HUnit` i slutet av
+börjar på `build-depends:`, och lägg till `, gtk3` i slutet av
 raden. Detta säger åt kompilatorn att använda hackagen när den bygger
 programmet.
 4. Kör `cabal update` och `cabal install gtk3`.
