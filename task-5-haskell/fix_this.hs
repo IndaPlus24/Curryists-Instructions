@@ -18,7 +18,7 @@ tests = TestList [
     TestLabel "testSquared1" testSquared1,
     TestLabel "testSquared2" testSquared2]
 
--- i terminalen:
+-- kör i terminalen:
 --      cabal repl --build-depends HUnit
 --      :l filnamn.hs
 --      runTestTT tests

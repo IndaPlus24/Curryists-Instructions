@@ -1,6 +1,6 @@
 <img src="https://media1.tenor.com/m/TgpQCGv2R8YAAAAd/4d-gaming-gaming.gif" align="right" width="300" />
 
-# 🍛 task 4: Keep hands inside vehicle
+# 🍛 task 5: Keep hands inside vehicle
 
 Nu när vi kan kompilera vårt program är det dags att bygga (lite mer)
 seriösa program! Den här veckan använder vi oss av `cabal` samt
