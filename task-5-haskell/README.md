@@ -29,7 +29,8 @@ egna projekt.
 0. Se till att du har [GHCup](https://www.haskell.org/ghcup/) och 
 [Cabal](https://www.haskell.org/cabal/) installerad. (När du har
 GHCup kan du köra `ghcup install cabal`.)
-1. I ditt repo, gå in i din `/src`-mapp och kör `cabal init`.
+1. I ditt repo, gå in i din `/src`-mapp, **skapa en ny mapp `/calculator`**,
+och kör `cabal init`.
 2. Du kommer få väldigt många frågor i terminalen relaterad till
 projektet. Det går bra att köra default-valet på allt. (Förutom val av
 licens: där får du ingen default, men du kan välja whatever, jag kommer
@@ -44,7 +45,8 @@ programmet.
 körs.
 
 > [!CAUTION]
-> I `/src`-mappen, lägg till filen `.gitignore` där du skriver följande:
+> I `/src/calculator`-mappen, lägg till filen `.gitignore` där du skriver
+> följande:
 > 
 > `/dist-newstyle`
 > 
@@ -68,8 +70,9 @@ inte kan ha flera plus eller minus i rad.)
 - 1 knapp som beräknar formeln som finns i displayrutan, och
 ersätter displayrutans innehåll med resultatet.
 
-Själva beräkningen ska ske i en separat, "pure" funktion, som tar in
-en sträng (formeln) och returnerar ett heltal (resultatet).
+Själva beräkningen ska ske i en separat, "pure" funktion som heter
+`calculate`, tar in en sträng (formeln) och returnerar ett heltal
+(resultatet).
 
 ### Del II: Testa beräkningen
 
@@ -77,23 +80,32 @@ Nu är det dags att kontrollera att beräkningen fungerar! För att göra
 det enkelt (och att jag inte hade tid att kasta ihop något mer komplext)
 (mest den andra anledningen) så kör vi tester på följande vis:
 
-1. Lägg in funktionen i en fil.
-2. Skriv *unit tests* i samma fil.
-3. Starta ghci via `cabal repl --build-depends HUnit`, och importera sedan
+1. Skapa en ny fil i `/src` som heter `CalculatorTest.hs`.
+2. Kopiera innehållet i [CalculatorTest.hs](CalculatorTest.hs) till filen.
+3. Lägg in din miniräknarfunktion i filen.
+4. Starta ghci via `cabal repl --build-depends HUnit`, och importera sedan
 filen med `:l filnamn.hs`.
+5. Kör `runTestTT tests` och observera resultatet.
 
-Du kan se ett exempel av detta i [fix_this.hs](fix_this.hs). Du kan också
-se att det är fel med en av funktionerna, som gör att det inte kan uppfylla
-testerna för den.
+Om allt ger rätt output, grattis! Du är klar med Del I. (För en extra uppgift
+som inte bedöms, hantera felaktiga input och testa med `test7` och `test8`.)
 
-(instruktioner för delen kommer efter övningen)
+> [!TIP]
+> Om du vill se ett exempel, se [HUnitExample.hs](HUnitExample.hs). Funktionerna där
+> passerar inte alla tester — som övning (frivilligt) kan du försöka att fixa
+> dem.
 
+Det andra du ska göra i Del II är att skriva dina egna tester. I
+[NumeralTest.hs](NumeralTest.hs) ser du ett program **(INTE FÄRDIGT JUST NU)** som
+saknar tester. Er uppgift blir att skriva tester så att vi kan kontrollera att
+programmet kör som förväntad, och rätta till buggar om något inte stämmer.
+Se testernas namn för ledtråd på vad du borde testa för.
 
 ## Teorifrågor
 Skriv in svaret på detta i en fil som heter `README.md` i docs.
 
 #### Fråga 1
-`cabal` är inte samma sak som `cabal install` (eller `cabal-install`).
+`cabal` är inte samma sak som `cabal install` (aka `cabal-install`).
 Förklara skillnaden.
 
 #### Fråga 2
