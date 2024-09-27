@@ -21,6 +21,10 @@ skriva tester för den och köra med `HUnit`.
 
 ### Del Ø: Sätta upp projektet
 
+> [!IMPORTANT]
+> `gtk3` fungerar inte för alla, och jag har inte lyckats förstå varför.
+> **Om du inte kan bygga projektet, hoppa till Del II direkt.**
+
 I [sample-cabal-project](sample-cabal-project/) kan ni hitta ett
 demo-projekt, och då behöver man bara köra `cabal update` och `cabal build`.
 Däremot så är det bra att känna till hur man sätter upp sina
@@ -55,6 +59,10 @@ körs.
 
 ### Del I: Bygga en miniräknare
 
+> [!IMPORTANT]
+> `gtk3` fungerar inte för alla, och jag har inte lyckats förstå varför.
+> **Om du inte kan bygga projektet, hoppa till Del II direkt.**
+
 Skapa ett miniräknare som tar in ett enkelt matematiskt uttryck och
 beräknar den. När man kör programmet med `cabal run` ska det visa ett
 fönster med följande innehåll:
@@ -83,7 +91,7 @@ det enkelt (och att jag inte hade tid att kasta ihop något mer komplext)
 1. Skapa en ny fil i `/src` som heter `CalculatorTest.hs`.
 2. Kopiera innehållet i [CalculatorTest.hs](CalculatorTest.hs) till filen.
 3. Lägg in din miniräknarfunktion i filen.
-4. Starta ghci via `cabal repl --build-depends HUnit`, och importera sedan
+4. Starta ghci via **`cabal repl --build-depends HUnit`**, och importera sedan
 filen med `:l filnamn.hs`.
 5. Kör `runTestTT tests` och observera resultatet.
 
@@ -100,6 +108,17 @@ Det andra du ska göra i Del II är att skriva dina egna tester. I
 saknar tester. Er uppgift blir att skriva tester så att vi kan kontrollera att
 programmet kör som förväntad, och rätta till buggar om något inte stämmer.
 Se testernas namn för ledtråd på vad du borde testa för.
+
+> [!IMPORTANT]
+> Om du **inte** lyckas bygga projektet i Del Ø och Del I, gör följande uppgifter
+> också.
+
+1. Skapa en ny fil `ContainerWater.hs` och i den, en ny funktion som tar in en
+lista av integers, och returnerar en integer. Den ska lösa denna
+LeetCode-uppgift: https://leetcode.com/problems/container-with-most-water/description/
+2. Försök komma på några "edge cases" (sällsynta fall för inputs som kan ställa till problem
+för programkörningen) och gör test fall för dem.
+3. Kör `HUnit` och se till att ditt program klarar testfallen.
 
 ## Teorifrågor
 Skriv in svaret på detta i en fil som heter `README.md` i docs.
