@@ -4,7 +4,7 @@
 
 Välkommen till webbprogrammering! Det är ett fantastiskt landskap
 med väldigt mycket att se. I den här tasken kommer ni att få bygga
-en liten hemsida med en väldigt bare bones API.
+en liten hemsida med en väldigt väldigt enkel API.
 
 ## Lästips
 
@@ -58,4 +58,4 @@ Actual uppgift:
 3. Skapa en rutt `/cat/:code`. När användaren besöker rutten returneras en HTML-sida vars enda element är bilden `https://http.cat/CODE.jpg` (där "CODE" är parametern som användaren skrev in).
 
 ## Teorifrågor
-?
+TODO...?
