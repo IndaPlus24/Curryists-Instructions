@@ -53,9 +53,12 @@ Förberedelser:
 
 Actual uppgift:
 
-1. Skapa en rutt `/wisdom` och en array av 3 strängar (vad som helst). När användaren besöker rutten ska hen få en random sträng, rimligtvis med `res.send()`.
+1. Skapa en rutt `/wisdom` och en array av minst 3 strängar (vad som helst). När användaren besöker rutten ska hen få en random sträng, rimligtvis med `res.send()`.
 2. Skapa rutterna `/`, `/time` och `/write`. När användaren besöker dessa rutter ska hen få se motsvarande HTML-sida. (`index.html` motsvarar `/`.)
 3. Skapa en rutt `/cat/:code`. När användaren besöker rutten returneras en HTML-sida vars enda element är bilden `https://http.cat/CODE.jpg` (där "CODE" är parametern som användaren skrev in).
 
 ## Teorifrågor
-TODO...?
+
+1. Vad är skillnaden mellan en "weakly typed" och en "strongly typed" språk? (Eller "weak typing" vs "strong typing")
+
+2. Förklara varför det här returnerar sant i JS: `0 == []`
