@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Hexazón - Ver 0.0.1</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="index.css">
+
+  <script src="index.js"></script>
+
+</head>
+
+<body onload="join()" onunload="leave()">
+  <div id="colLeft">
+    <div id="options">
+      <b>Name:</b> <input id="name" type="text" oninput="checknew()"> <b>Color:</b> coming soon! 
+      <button id="save" onclick="save();">Save</button>
+    </div>
+    <div id="chat">
+    </div>
+    <div id="input">
+      <textarea id="msg" maxlength="200" placeholder="Type here..." onkeypress="checkenter(event)" onkeyup="undoenter(event)"></textarea>
+      <button id="send" onclick="chat();">Send</button>
+    </div>
+  </div>
+  <div id="colRight">
+    <div id="title">
+      <h1>HEXAZÓN</h1>
+      <h2>Anarchy Not-IRC</h2>
+      <h3>Ver 0.0.1</h3>
+    </div>
+    <div id="info">
+      <h1>#...</h1>
+      <p>Join or mouse over a channel to see its topic!</p>
+    </div>
+    <div id="list">
+      <ul>
+        <li>#general</li>
+        <li>#alternate</li>
+        <li>#anotherone</li>
+      </ul>
+    </div>
+  </div>
+</body>
+  
+</html>

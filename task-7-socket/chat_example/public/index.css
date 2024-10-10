@@ -1,0 +1,165 @@
+body {
+    display: flex;
+    flex-direction: row;
+}
+#colRight {
+    flex-basis: 30%;
+    flex-grow: 1;
+    height: 100vh;
+
+    border-left: 2px solid black;
+}
+#colLeft {
+    max-width: 70%;
+    flex-grow: 1000;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+
+
+#title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1em 0;
+    border-bottom: 2px solid black;
+}
+#title h1, #title h3 {
+    font-size: 2em;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+#title h3 {
+    font-size: 1em;
+    font-style: italic;
+    font-weight: normal;
+}
+#title h1:hover, #title h3:hover {
+    text-decoration: underline;
+}
+
+
+
+#info {
+    padding: 1em;
+    height: 8em;
+    border-bottom: 2px solid black;
+}
+#info h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black;
+}
+#info p {
+    margin: 0.5em 0 0 1em;
+}
+
+
+
+#list {
+    overflow: auto;
+}
+#list ul {
+    padding: 10px;
+}
+#list li {
+    background-color: #DDD;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+#options {
+    position: relative;
+    padding: 0.5em;
+    border-bottom: 2px solid black;
+    flex-grow: 1;
+}
+#options b {
+    font-weight: bold;
+}
+#options button {
+    display: flex; /*just to center the text*/
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    padding: 0 20px;
+    background-color: #DDD;
+}
+#options button.unsaved {
+    color: red;
+    font-weight: bold;
+    animation: unsaved 0.7s ease-in-out infinite alternate;
+}
+#options button.unsaved::before {
+    content: "Unsaved changes";
+    color: red;
+    font-weight: normal;
+
+    width: 200%;
+
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 100%;
+    padding-right: 10px;
+    height: 100%;
+}
+@keyframes unsaved {
+    from {background-color: #DDD;}
+    to   {background-color: #CCC;}
+}
+
+
+
+#input {
+    flex-basis: 60px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    border-top: 2px solid black;
+}
+#input button {
+    height: 100%;
+    flex-basis: 60px;
+    flex-grow: 1;
+    background-color: #DDD;
+}
+#input button.sendable {
+    font-weight: bold;
+}
+#input textarea {
+    resize: none;
+    height: 100%;
+    flex-grow: 1000;
+    padding: 10px;
+}
+
+
+#chat {
+    flex-grow: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: auto;
+    padding: 10px;
+    height: 100%;
+    word-break: break-word;
+}
+#chat b {
+    font-weight: bold;
+}
