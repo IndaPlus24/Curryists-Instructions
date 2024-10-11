@@ -56,5 +56,7 @@ Här är några förslag på funktioner ni kan lägga till i spelet. **Dessa kr�
 
 ## Ska hela spelet vara klart till övning 7?
 
+Om man jobbar riktigt bare-minimum så kan man säkert få ihop ett basic spel på en vecka som möter alla krav, men jag vill gärna att ni tar er tid och gör ett spel ni tycker om. Därför har jag planerat enligt följande:
+
 - På övning 7 (fredagen efter tentaP) kommer ni få visa upp ert spel, men **spelet måste inte vara färdigt just då.**
-- För task 8 (och task 9?) kommer ni få lägga till lite extra funktionaliteter till ert spel. Ni kan ta er tid och fixa klart spelet under de två veckorna.
+- För task 8 (och task 9?) kommer ni få lägga till lite extra funktionaliteter till ert spel. Ni kan ta er tid och fixa klart spelet under de veckorna.
