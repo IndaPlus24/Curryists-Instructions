@@ -89,23 +89,27 @@ end func
 </details>
 
 > [!IMPORTANT]
-> Den här veckan får du välja mellan två uppgifter att göra, listad nedan som alternativ 1 och 2. Du behöver bara välja och implementera ett av dem!
+> Den här veckan får du välja mellan två uppgifter att göra, listad nedan som Alternativ I och II. Du behöver bara välja och implementera ett av dem!
 
-### Alternativ 1: Sortera i Prolog
+### Alternativ I: Sortera i Prolog
 
 - Skapa en fil `sort.pl`, och definiera tre predikat: `insertion(I,O)`, `selection(I,O)` och `merge(I,O)`.
     - Dessa ska ta in en osorterade lista `I`, och binda den sorterade listan till `O`.
     - Predikaten ska implementera och använda sig av de tre sorteringsalgoritmerna ovan.
 
-### Alternativ 2: Sortera med grafik
+### Alternativ II: Sortera med grafik
 
 - Välj **valfritt språk** och implementera de tre sorteringsalgoritmerna ovan.
 - Skriv sedan någon sorts frontend för att visualisera algoritmens arbetsprocess!
     - GIFarna i regular-taskens README kan vara inspiration för hur en sådan visualisering kan se ut.
     - Terminalgrafik är acceptabelt, men satsa gärna på ett grafiskt gränssnitt!
-- Implementera även **en extra, valfri sorteringsalgoritm** (den får vara hur dumt som helst!), och visualisera den också.
+- Implementera även **ytterligare en sorteringsalgoritm av ditt val** (ju dummare desto bättre), och visualisera den också.
 - Förklara i din `docs/README.md` hur man kör ditt program!
 
 ## Teorifrågor
 
-(?)
+1. Föreställ dig en lista med 4096 element. I allra värsta fall (elementet vi söker är det allra sista vi tittar på), hur många iterationer behöver du för att hitta det sökta elementet om du använder:
+    - Linjärsökning?
+    - Binärsökning? (off-by-one svar är ok)
+2. Förklara varför insertion sort har tidskomplexitet $O(n)$ i bästa fall, men $O(n^2)$ i sämsta fall.
+2. Om du valt **Alternativ II**: Vad är tidskomplexiteten (vid bästa och sämsta fall) för din extra valda sorteringsalgoritm?
