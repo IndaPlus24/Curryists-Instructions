@@ -96,6 +96,12 @@ end func
 - Skapa en fil `sort.pl`, och definiera tre predikat: `insertion(I,O)`, `selection(I,O)` och `merge(I,O)`.
     - Dessa ska ta in en osorterade lista `I`, och binda den sorterade listan till `O`.
     - Predikaten ska implementera och använda sig av de tre sorteringsalgoritmerna ovan.
+- Skriv sedan en predikat `sort(InputFile, Algorithm)` som läser in en fil med filnamnet `InputFile`, och använder den givna algoritmen `Algorithm` för att sortera.
+    - Se [prolog_sorting.txt](prolog_sorting.txt) för hur inputdatan ska se ut: den är formatterad som så att input-termerna kommer i par, där den första termen är en osorterad lista, och den andra termen är sorterad.
+        - Använd [see/1](https://www.swi-prolog.org/pldoc/doc_for?object=see/1) för att ladda in en textfil i input-streamen. Det räcker med att skriva `see(InputFile)`.
+        - Använd [read/1](https://www.swi-prolog.org/pldoc/man?predicate=read/1) för att läsa in en Prolog-term i taget från input-streamen.
+        - När du har stött på `end_of_file` från `read/1`, stäng gärna input-streamen med [seen/0](https://www.swi-prolog.org/pldoc/doc_for?object=seen/0).
+    - Det finns inget krav på formatet för `Algorithm`, så du kan t.ex. säga att `i` motsvarar insertion sort, `s` motsvarar selection sort osv.
 
 ### Alternativ II: Sortera med grafik
 
