@@ -8,6 +8,7 @@ Välkommen till nästa delen i er real world training: för att förbereda er in
 
 - [MIPS reference sheet](https://www.kth.se/social/files/563c63c9f276547044e8695f/mips-ref-sheet.pdf)
 - [You can learn MIPS Assembly in 15 minutes](https://www.youtube.com/watch?v=5AN4Fo0GiBI) (första 4 min räcker dock)
+- [Fler demo-program](https://rivoire.cs.sonoma.edu/cs351/wemips/)
 
 ## Koduppgift
 
