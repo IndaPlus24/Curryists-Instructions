@@ -56,7 +56,7 @@ int foo(int bar) {
     return bar*bar;
 }
 
-int main {
+int main() {
     int four = foo(2);
     return 0;
 }
