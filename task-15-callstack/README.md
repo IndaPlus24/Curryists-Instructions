@@ -69,6 +69,7 @@ int a = 4;
 
 void foo() {
     if (a > 0) {
+        a--;
         foo();
     }
 }
