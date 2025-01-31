@@ -25,9 +25,9 @@ OBS i denna video dekompilerar han ett program kompilerad för ARM64, men det ge
 ```shell
 $ mips-linux-gnu-objdump -d min_fil
 ```
-Detta kommer att skriva ut assemblyinstruktionerna som filen innehåller till terminalen. Du kan spara det till en fil genom att använda kommandot `tee`:
+Detta kommer att skriva ut assemblyinstruktionerna som filen innehåller till terminalen. Du kan spara det till en fil genom att använda `>` operatorn i kommandotolken:
 ```shell
-$ mips-linux-gnu-objdump -d min_fil | tee min_fil.S
+$ mips-linux-gnu-objdump -d min_fil > min_fil.S
 ```
 Det finns mer avancerade dekompilatorer (t.ex. Ghidra, IDA) som kan ta assemblykod och vidare dekompilera den till ett högre nivå språk (exempelvis C). **Ni får inte använda en dekompilerare för att direkt generera icke-assembly kod från den binära filen!**
 
