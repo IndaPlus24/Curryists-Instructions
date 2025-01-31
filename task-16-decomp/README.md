@@ -44,7 +44,7 @@ Det finns mer avancerade dekompilatorer (t.ex. Ghidra, IDA) som kan ta assemblyk
 
 ### 15.2: Kodupppgifter 
 
-**15.2.1:** Skriv om den binära filen `mystery_box_1` på valfritt språk. Förutom Prolog. Ni får absolut **INTE**, under NÅGRA som helst omständigheter, dekompilera de binära filerna till Prolog. 
+**15.2.1:** Skriv om den binära filen `mystery_box_1` på valfritt språk. Förutom Prolog. Då blir jag besviken.
 
 Ni kan till och med skriva det i pseudokod, i så fall kan ni lämna svaren i `docs/`. Viktigast är att du visar att du förstår vad den exekverbara filen gör genom att beskriva det.
 
