@@ -1,4 +1,4 @@
-# 🖧 Task 18: The (Un)Social Network
+# 🖧 Task 18: The Not-Particularly-Social Network
 Från länkade listor till stackar och träd, alla dessa datastrukturer bygger på att man kan sammanlänka noder med kanter. Den här veckan tar vi det konceptet och tittar på dess *final form*: **Grafer**.
 
 Grafer kan i princip användas för att modellera allt där disjunkta saker är kopplade till varandra på något sätt. Allt från busshållplatser i en stad, till vänner i en vänkrets, till mer nischade saker som olika tillstånd i ett program (se [*State Diagram*](https://en.wikipedia.org/wiki/State_diagram)). Grafer är väldigt applicerbara i många situationer, och på grund av det är det viktigt att vi förstår hur vi navigerar dem effektivt, speciellt inom datorvärlden där vi finner en av de mest vanligt förekommande användningar för grafmodeller: **Nätverk**. 
