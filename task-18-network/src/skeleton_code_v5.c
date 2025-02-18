@@ -64,6 +64,7 @@
 typedef enum {
     MESSAGE_TYPE_DISCOVER_REQUEST,
     MESSAGE_TYPE_DISCOVER_RESPONSE,
+    MESSAGE_TYPE_CONNECT_REQUEST, // This is now unused, but is kept here for the sake of interoperability
     MESSAGE_TYPE_FIND_REQUEST,
     MESSAGE_TYPE_FIND_RESPONSE_FOUND,
     MESSAGE_TYPE_FIND_RESPONSE_NOT_FOUND,
@@ -97,8 +98,6 @@ void process_message(Message *msg, struct sockaddr_in *client_addr, int sockfd);
 void send_message(Message *msg, struct sockaddr_in *dest_addr, int sockfd);
 void handle_connect_command(char *target_name, int sockfd);
 void handle_find_command(char *target_name, int sockfd);
-void handle_found_signal(char *target_name, int sockfd);
-void handle_not_found_signal(char *target_name, int sockfd);
 
 // --- Discovery function prototypes ---
 void send_discovery_request(int sockfd);
@@ -108,7 +107,6 @@ void print_discovered_users();
 User* find_discovered_user_by_name(char *name);
 void clear_discovered_users_list();
 int add_discovered_user(char *name, struct sockaddr_in addr);
-
 
 int main() {
     int sockfd;
@@ -184,7 +182,7 @@ int main() {
         }
 
         // --- Receive and process incoming messages ---
-        switch (select(sockfd + 1, &readable_fds, NULL, NULL, &timeout)) {
+        switch (select(sockfd + 1, &readable_fds, NULL, NULL, &timeout)) { // thanks muhammed :thumbsup:
             case -1:
                 perror("Error while listening for incoming messages.");
                 exit(EXIT_FAILURE);
@@ -228,12 +226,12 @@ void process_message(Message *msg, struct sockaddr_in *client_addr, int sockfd) 
         case MESSAGE_TYPE_FIND_RESPONSE_FOUND:
             // TODO: Handle FIND_RESPONSE_FOUND message (send back to sender or print)
             printf("Processing FIND_RESPONSE_FOUND for %s from %s, path: %s\n", msg->target_name, msg->source_name, msg->path);
-            handle_found_signal(msg->target_name, sockfd);
+            handle_find_command(msg->target_name, sockfd);
             break;
         case MESSAGE_TYPE_FIND_RESPONSE_NOT_FOUND:
             // TODO: Handle FIND_RESPONSE_NOT_FOUND message (send back to sender or print)
             printf("Processing FIND_RESPONSE_NOT_FOUND for %s\n", msg->target_name);
-            handle_not_found_signal(msg->target_name, sockfd);
+            handle_find_command(msg->target_name, sockfd);
             break;
         case MESSAGE_TYPE_DISCOVER_REQUEST:
             handle_discovery_response(msg, client_addr, sockfd); // Handle discovery request
@@ -291,7 +289,6 @@ void handle_connect_command(char *target_name, int sockfd) {
     }
 }
 
-
 void handle_find_command(char *target_name, int sockfd) {
     printf("Find command for: %s\n", target_name);
     // TODO: Implement the FIND logic:
@@ -305,6 +302,9 @@ void handle_find_command(char *target_name, int sockfd) {
     // 3. Keep track of visited users to prevent loops (important for graph traversal).
     // 
     // 4. Implement logic to handle FIND_RESPONSE_FOUND and FIND_RESPONSE_NOT_FOUND messages that come back.
+    //
+    // HINT: You may want to break this into three functions for sending a find request, receiving a "found"
+    // message and receiving a "not found" message respectively.
 
     // --- Placeholder: For now, just print a message ---
     printf("Initiating find for '%s' (placeholder find logic).\n", target_name);
@@ -326,16 +326,6 @@ void handle_find_command(char *target_name, int sockfd) {
     strncpy(find_request_msg.source_name, my_name, MAX_NAME_LENGTH - 1);
     strncpy(find_request_msg.target_name, target_name, MAX_NAME_LENGTH - 1);
     send_message(&find_request_msg, &target_addr, sockfd); // Sending to a placeholder address
-}
-
-void handle_found_signal(char *target_name, int sockfd) {
-    perror("Function `handle_found_signal` not yet implemented");
-    exit(EXIT_FAILURE);
-}
-
-void handle_not_found_signal(char *target_name, int sockfd) {
-    perror("Function `handle_not_found_signal` not yet implemented");
-    exit(EXIT_FAILURE);
 }
 
 // --- Discovery Function Implementations ---
