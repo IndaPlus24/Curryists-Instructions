@@ -49,6 +49,11 @@
 // This header is *essential* for all socket-based network programming in C.
 #include <sys/socket.h>
 
+// Library for synchronous non-blocking IO. Provides the `select()` function, used here to monitor if new data is
+// available at a file descriptor or not, thus letting us only read from the file descriptor (blocks execution)
+// when new data has been sent over the network.
+#include <sys/select.h>
+
 #define SERVER_PORT 5000 // Port for your application
 #define DISCOVERY_PORT 5001 // Port for discovery messages
 #define MAX_BUFFER_SIZE 1024
@@ -59,7 +64,6 @@
 typedef enum {
     MESSAGE_TYPE_DISCOVER_REQUEST,
     MESSAGE_TYPE_DISCOVER_RESPONSE,
-    MESSAGE_TYPE_CONNECT_REQUEST,
     MESSAGE_TYPE_FIND_REQUEST,
     MESSAGE_TYPE_FIND_RESPONSE_FOUND,
     MESSAGE_TYPE_FIND_RESPONSE_NOT_FOUND,
@@ -70,7 +74,7 @@ typedef enum {
 typedef struct {
     MessageType type;
     char source_name[MAX_NAME_LENGTH]; // (This is your name)
-    char target_name[MAX_NAME_LENGTH]; // For CONNECT and FIND requests
+    char target_name[MAX_NAME_LENGTH]; // For FIND requests
     char path[MAX_BUFFER_SIZE];       // For FIND responses, e.g., "john->luke->mark"
 } Message;
 
@@ -93,10 +97,12 @@ void process_message(Message *msg, struct sockaddr_in *client_addr, int sockfd);
 void send_message(Message *msg, struct sockaddr_in *dest_addr, int sockfd);
 void handle_connect_command(char *target_name, int sockfd);
 void handle_find_command(char *target_name, int sockfd);
+void handle_found_signal(char *target_name, int sockfd);
+void handle_not_found_signal(char *target_name, int sockfd);
 
 // --- Discovery function prototypes ---
 void send_discovery_request(int sockfd);
-void handle_discovery_response(Message *msg, struct sockaddr_in *client_addr);
+void handle_discovery_response(Message *msg, struct sockaddr_in *client_addr, int sockfd);
 void handle_discover_command(int sockfd); // Handler for 'discover' command
 void print_discovered_users();
 User* find_discovered_user_by_name(char *name);
@@ -108,6 +114,10 @@ int main() {
     int sockfd;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
+
+    fd_set readable_fds; // Set of file descriptors to read from
+    struct timeval timeout; // Struct for how long until 
+                            // checking for new data should time out
     char buffer[MAX_BUFFER_SIZE];
 
     // --- Get user's name (You can change how this is set) ---
@@ -142,6 +152,12 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    // --- Set up the socket for non-blocking reading --
+    FD_ZERO(&readable_fds);         // Clear the file descriptor set
+    FD_SET(sockfd, &readable_fds); // Add our socket to it
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 1000;         // Set timeout period to 1 millisecond (1000 microseconds)
+
     printf("Program '%s' started, listening on port %d, discovery port %d\n", my_name, SERVER_PORT, DISCOVERY_PORT);
 
     // --- Main command loop ---
@@ -168,61 +184,62 @@ int main() {
         }
 
         // --- Receive and process incoming messages ---
-        recvfrom(sockfd, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client_addr, &client_addr_len);
-        if (strlen(buffer) > 0) {
-            Message received_msg;
-            received_msg.type = get_message_type(buffer); // Determine message type from buffer
-            if (received_msg.type != MESSAGE_TYPE_UNKNOWN) {
-                // TODO: Deserialize the buffer into the Message struct (based on message type)
-                // For now, just print the raw message:
-                printf("Received message: %s from %s:%d\n", buffer, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-                process_message(&received_msg, &client_addr, sockfd);
-            } else {
-                printf("Unknown message type received: %s\n", buffer);
-            }
-            memset(buffer, 0, MAX_BUFFER_SIZE); // Clear buffer after processing
-        }
+        switch (select(sockfd + 1, &readable_fds, NULL, NULL, &timeout)) {
+            case -1:
+                perror("Error while listening for incoming messages.");
+                exit(EXIT_FAILURE);
+            case 0: // 0 means select() didn't find anything new on the socket.
+                break;
+            default:
+                recvfrom(sockfd, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client_addr, &client_addr_len);
+                if (strlen(buffer) > 0) {
+                    Message received_msg;
+                    received_msg.type = get_message_type(buffer); // Determine message type from buffer
+                    if (received_msg.type != MESSAGE_TYPE_UNKNOWN) {
+                        // TODO: Deserialize the buffer into the Message struct (based on message type)
+                        // For now, just print the raw message:
+                        printf("Received message: %s from %s:%d\n", buffer, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+                        process_message(&received_msg, &client_addr, sockfd);
+                    } else {
+                        printf("Unknown message type received: %s\n", buffer);
+                    }
+                    memset(buffer, 0, MAX_BUFFER_SIZE); // Clear buffer after processing
+                }                                                                                                                                
+        } 
     }
-
     close(sockfd);
     return 0;
 }
 
 MessageType get_message_type(char *buffer) {
     // TODO: Implement logic to determine the message type from the buffer content.
-    //  For example, you could start messages with a keyword indicating the type.
-    //  For now, just return UNKNOWN as a placeholder.
+    // Messages must be formatted as strings of key-value pairs when sent over the network
+    // See line 236.
     return MESSAGE_TYPE_UNKNOWN;
 }
 
-
 void process_message(Message *msg, struct sockaddr_in *client_addr, int sockfd) {
     switch (msg->type) {
-        case MESSAGE_TYPE_CONNECT_REQUEST:
-            // TODO: Handle CONNECT_REQUEST message
-            printf("Processing CONNECT_REQUEST from %s\n", msg->source_name);
-            // Example: Add to connection list if appropriate
-            break;
         case MESSAGE_TYPE_FIND_REQUEST:
             // TODO: Handle FIND_REQUEST message (initiate find or forward)
             printf("Processing FIND_REQUEST for %s from %s\n", msg->target_name, msg->source_name);
-            handle_find_command(msg->target_name, sockfd); // Example: Just start a local find for now
+            handle_find_command(msg->target_name, sockfd); 
             break;
         case MESSAGE_TYPE_FIND_RESPONSE_FOUND:
-            // TODO: Handle FIND_RESPONSE_FOUND message (display path)
-            printf("Processing FIND_RESPONSE_FOUND for %s, path: %s\n", msg->target_name, msg->path);
-            printf("Path found: %s\n", msg->path); // Example: Print the path
+            // TODO: Handle FIND_RESPONSE_FOUND message (send back to sender or print)
+            printf("Processing FIND_RESPONSE_FOUND for %s from %s, path: %s\n", msg->target_name, msg->source_name, msg->path);
+            handle_found_signal(msg->target_name, sockfd);
             break;
         case MESSAGE_TYPE_FIND_RESPONSE_NOT_FOUND:
-            // TODO: Handle FIND_RESPONSE_NOT_FOUND message
+            // TODO: Handle FIND_RESPONSE_NOT_FOUND message (send back to sender or print)
             printf("Processing FIND_RESPONSE_NOT_FOUND for %s\n", msg->target_name);
-            printf("User '%s' not found through current connections.\n", msg->target_name);
+            handle_not_found_signal(msg->target_name, sockfd);
             break;
         case MESSAGE_TYPE_DISCOVER_REQUEST:
-            handle_discovery_response(msg, client_addr); // Handle discovery request
+            handle_discovery_response(msg, client_addr, sockfd); // Handle discovery request
             break;
         case MESSAGE_TYPE_DISCOVER_RESPONSE:
-            handle_discovery_response(msg, client_addr); // Handle discovery response
+            handle_discovery_response(msg, client_addr, sockfd); // Handle discovery response
             break;
         default:
             printf("Unknown message type processing.\n");
@@ -230,13 +247,16 @@ void process_message(Message *msg, struct sockaddr_in *client_addr, int sockfd) 
     }
 }
 
-
 void send_message(Message *msg, struct sockaddr_in *dest_addr, int sockfd) {
     char buffer[MAX_BUFFER_SIZE];
     memset(buffer, 0, MAX_BUFFER_SIZE);
 
     // TODO: Serialize the Message struct into the buffer for sending.
-    //  For example, you can format it as a string, e.g., "TYPE=CONNECT_REQUEST;SOURCE=john;TARGET=luke;"
+    // Use the following key-value format for sending messages: 
+    // "TYPE=<MESSAGE_TYPE>;SOURCE=<USER_NAME>;TARGET=<USER_NAME>
+    //
+    // Example:
+    // "TYPE=CONNECT_REQUEST;SOURCE=john;TARGET=luke;"
     sprintf(buffer, "MESSAGE_TYPE=%d;SOURCE=%s;TARGET=%s;", msg->type, msg->source_name, msg->target_name);
 
     if (sendto(sockfd, buffer, strlen(buffer), 0, (struct sockaddr *)dest_addr, sizeof(*dest_addr)) == -1) {
@@ -250,27 +270,22 @@ void send_message(Message *msg, struct sockaddr_in *dest_addr, int sockfd) {
 void handle_connect_command(char *target_name, int sockfd) {
     printf("Connect command to: %s\n", target_name);
     // TODO:
-    // 1. Resolve target_name to IP address and port (implement name lookup)
-    //    Now, use discovered users list to get IP if name is found!
-    // 2. Create a CONNECT_REQUEST message
-    // 3. Send the CONNECT_REQUEST message to the target
-    // 4. Update local connection data structure after connecting (assume successful connection)
+    // 1. Find the network credentials (IP) associated with the provided name
+    // You should have these stored in your array of users after running `discover`
+    //
+    // 2. Add said user to your adjacency list/matrix.
+    //
+    // NOTE: There's actually no communication between computers when "connecting".
+    // Since we're using UDP, we don't need to establish communication channels for
+    // sending messages, so the target computer doesn't actually need to know that
+    // you're "connected" to it to be able to send messages to it. The connection
+    // is more of a symbolic thing, think of it as adding friends to your friends
+    // list on a social media platform.
 
     User *target_user = find_discovered_user_by_name(target_name);
     if (target_user != NULL && target_user->found) { // Check if user is found in discovery
-        printf("Found user '%s' at %s:%d. Attempting connection...\n", target_name, inet_ntoa(&target_user->addr.sin_addr), ntohs(target_user->addr.sin_port));
-
-        struct sockaddr_in target_addr = target_user->addr;
-        target_addr.sin_port = htons(SERVER_PORT); // Connect to the main server port
-
-        Message connect_msg;
-        connect_msg.type = MESSAGE_TYPE_CONNECT_REQUEST;
-        strncpy(connect_msg.source_name, my_name, MAX_NAME_LENGTH - 1);
-        strncpy(connect_msg.target_name, target_name, MAX_NAME_LENGTH - 1);
-        send_message(&connect_msg, &target_addr, sockfd);
         // TODO: Update your connection data structure here to indicate connection to target_name
-        printf("Connect request sent to '%s'.\n", target_name);
-
+        printf("Connected to user '%s' at %s:%d.\n", target_name, inet_ntoa(*(&target_user->addr.sin_addr)), ntohs(target_user->addr.sin_port));
     } else {
         printf("User '%s' not found. Run 'discover' command first.\n", target_name);
     }
@@ -281,12 +296,14 @@ void handle_find_command(char *target_name, int sockfd) {
     printf("Find command for: %s\n", target_name);
     // TODO: Implement the FIND logic:
     // 1. Check if target_name is directly connected.
+    // 
     // 2. If not directly connected, use either:
     //  - depth first search (send find requests to each user you're connected to first)
     //  - breadth first search (look through all your connected users first, then send find requests to each one)
     //  to find if there's a chain of connections to the user you're looking for.
     //
     // 3. Keep track of visited users to prevent loops (important for graph traversal).
+    // 
     // 4. Implement logic to handle FIND_RESPONSE_FOUND and FIND_RESPONSE_NOT_FOUND messages that come back.
 
     // --- Placeholder: For now, just print a message ---
@@ -298,6 +315,7 @@ void handle_find_command(char *target_name, int sockfd) {
     memset(&target_addr, 0, sizeof(target_addr));
     target_addr.sin_family = AF_INET;
     target_addr.sin_port = htons(SERVER_PORT);
+    
     if (inet_pton(AF_INET, "127.0.0.1", &target_addr.sin_addr) <= 0) { // Replace with actual connected user's IP
         perror("inet_pton failed for example FIND_REQUEST target IP");
         return;
@@ -308,6 +326,16 @@ void handle_find_command(char *target_name, int sockfd) {
     strncpy(find_request_msg.source_name, my_name, MAX_NAME_LENGTH - 1);
     strncpy(find_request_msg.target_name, target_name, MAX_NAME_LENGTH - 1);
     send_message(&find_request_msg, &target_addr, sockfd); // Sending to a placeholder address
+}
+
+void handle_found_signal(char *target_name, int sockfd) {
+    perror("Function `handle_found_signal` not yet implemented");
+    exit(EXIT_FAILURE);
+}
+
+void handle_not_found_signal(char *target_name, int sockfd) {
+    perror("Function `handle_not_found_signal` not yet implemented");
+    exit(EXIT_FAILURE);
 }
 
 // --- Discovery Function Implementations ---
@@ -325,7 +353,7 @@ void send_discovery_request(int sockfd) {
     send_message(&discover_msg, &broadcast_addr, sockfd);
 }
 
-void handle_discovery_response(Message *msg, struct sockaddr_in *client_addr) {
+void handle_discovery_response(Message *msg, struct sockaddr_in *client_addr, int sockfd) {
     if (msg->type == MESSAGE_TYPE_DISCOVER_REQUEST) {
         printf("Discovery request received from %s, name: %s. Sending response.\n", inet_ntoa(client_addr->sin_addr), msg->source_name);
         // Respond to discovery request
@@ -347,10 +375,10 @@ void handle_discover_command(int sockfd) {
     printf("Discover command issued. Broadcasting...\n");
     clear_discovered_users_list(); // Clear the list of discovered users before new discovery
     send_discovery_request(sockfd);
+    sleep(2); // Give other users on the network time to respond
     printf("Discovery broadcast message sent.\n");
-    print_discovered_users(); // Immediately print discovered users (might be empty or incomplete)
+    print_discovered_users(); 
 }
-
 
 void print_discovered_users() {
     if (discovered_user_count == 0) {
@@ -360,7 +388,7 @@ void print_discovered_users() {
     printf("Discovered users:\n");
     for (int i = 0; i < discovered_user_count; i++) {
         if (discovered_users[i].found) { // Only print if actually found in discovery
-            printf("- %s at %s:%d\n", discovered_users[i].name, inet_ntoa(&discovered_users[i].addr.sin_addr), ntohs(discovered_users[i].addr.sin_port));
+            printf("- %s at %s:%d\n", discovered_users[i].name, inet_ntoa(*(&discovered_users[i].addr.sin_addr)), ntohs(discovered_users[i].addr.sin_port));
         }
     }
 }
@@ -402,3 +430,4 @@ int add_discovered_user(char *name, struct sockaddr_in addr) {
         return -1; // List full
     }
 }
+
